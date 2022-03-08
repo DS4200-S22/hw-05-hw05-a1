@@ -10,18 +10,33 @@ const svg1 = d3.select("#vis-holder")
                 .attr("height", height - margin.top - margin.bottom)
                 .attr("viewBox", [0, 0, width, height]); 
 
+
 // Initialize brush for Scatterplot1 and points. We will need these to be global. 
 let brush1; 
 let myCircles1; 
 
 //TODO: append svg object to the body of the page to house Scatterplot2 (call it svg2)
+const svg2 = d3.select("#vis-holder")
+                .append("svg")
+                .attr("width", width - margin.left - margin.right)
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("viewBox", [0, 0, width, height]); 
 
 //TODO: Initialize brush for Scatterplot2 and points. We will need these to be global.
+let brush2; 
+let myCircles2; 
 
 //TODO: append svg object to the body of the page to house bar chart 
+const svg3 = d3
+  .select("#vis-holder")
+  .append("svg")
+  .attr("width", width-margin.left-margin.right)
+  .attr("height", height - margin.top - margin.bottom)
+  .attr("viewBox", [0, 0, width, height]); 
+
 
 //TODO: Initialize bars. We will need these to be global. 
-
+let bars;
 
 // Define color scale
 const color = d3.scaleOrdinal()
@@ -63,7 +78,7 @@ d3.csv("data/iris.csv").then((data) => {
                       .text(xKey1)
       );
 
-    // Finx max y 
+    // Find max y 
     let maxY1 = d3.max(data, (d) => { return d[yKey1]; });
 
     // Create Y scale
@@ -104,12 +119,131 @@ d3.csv("data/iris.csv").then((data) => {
 
   //TODO: Scatterplot 2 (show Sepal width on x-axis and Petal width on y-axis)
   {
-    // Scatterplot2 code here 
-  }
+    let xKey2 = "Sepal_Width";
+    let yKey2 = "Petal_Width";
 
+    // Find max x
+    let maxX2 = d3.max(data, (d) => { return d[xKey2]; });
+
+    // Create X scale
+    let x2 = d3.scaleLinear()
+                .domain([0,maxX2])
+                .range([margin.left, width-margin.right]); 
+    
+    // Add x axis 
+    svg2.append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`) 
+        .call(d3.axisBottom(x2))   
+        .attr("font-size", '20px')
+        .call((g) => g.append("text")
+                      .attr("x", width - margin.right)
+                      .attr("y", margin.bottom - 4)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(xKey2)
+      );
+
+    // Find max y value
+    let maxY2 = d3.max(data, (d) => { return d[yKey2]; });
+
+    // Create Y scale
+    let y2 = d3.scaleLinear()
+                .domain([0, maxY2])
+                .range([height - margin.bottom, margin.top]); 
+
+    // Add y axis 
+    svg2.append("g")
+        .attr("transform", `translate(${margin.left}, 0)`) 
+        .call(d3.axisLeft(y2)) 
+        .attr("font-size", '20px') 
+        .call((g) => g.append("text")
+                      .attr("x", 0)
+                      .attr("y", margin.top)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(yKey2)
+      );
+
+    // Add points
+    const myCircles2 = svg2.selectAll("circle")
+                            .data(data)
+                            .enter()
+                              .append("circle")
+                              .attr("id", (d) => d.id)
+                              .attr("cx", (d) => x2(d[xKey2]))
+                              .attr("cy", (d) => y2(d[yKey2]))
+                              .attr("r", 8)
+                              .style("fill", (d) => color(d.Species))
+                              .style("opacity", 0.5);
+
+    //TODO: Define a brush (call it brush2)
+
+    //TODO: Add brush2 to svg2
+    
+  }
+  
   //TODO: Barchart with counts of different species
   {
-    // Bar chart code here 
+    let xKey3 = "Species";
+    let yKey3 = "Count";
+
+    // Hardcoded barchart data
+    const data1 = [
+      {name: 'setosa', count: 50},
+      {name: 'versicolor', count: 50},
+      {name: 'virginica', count: 50},
+    ];
+    
+    // Find max y value to plot
+    let maxY3 = d3.max(data1, function(d) { return d.count; });
+
+    // Create y scale
+    let y3 = d3.scaleLinear()
+                .domain([0,maxY3])
+                .range([height-margin.bottom,margin.top]); 
+
+    // Create x scale
+    let x3 = d3.scaleBand()
+                .domain(d3.range(data1.length))
+                .range([margin.left, width - margin.right])
+                .padding(0.1); 
+
+    // Add y axis to webpage
+    svg3.append("g")
+      .attr("transform", `translate(${margin.left}, 0)`)
+      .call(d3.axisLeft(y3)) 
+      .attr("font-size", '20px')
+      .call((g) => g.append("text")
+                      .attr("x", 0)
+                      .attr("y", margin.top - 20)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(yKey3)); 
+
+    // Add x axis to webpage
+    svg3.append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(x3).tickFormat(i => data1[i].name))   
+        .attr("font-size", '20px')
+        .call((g) => g.append("text")
+                      .attr("x", width - margin.right)
+                      .attr("y", margin.bottom)
+                      .attr("fill", "black")
+                      .attr("text-anchor", "end")
+                      .text(xKey3));
+    
+    
+    // Add bars to the webpage
+    svg3.selectAll(".bar") 
+        .data(data1) 
+        .enter()  
+        .append("rect") 
+        .attr("class", "bar") 
+        .attr("x", (d,i) => x3(i)) 
+        .attr("y", (d) => y3(d.count)) 
+        .attr("height", (d) => (height - margin.bottom) - y3(d.count)) 
+        .attr("width", x3.bandwidth())
+        .style("fill", (d) => color(d.name))
   }
 
   //Brushing Code---------------------------------------------------------------------------------------------
