@@ -256,11 +256,11 @@ d3.csv("data/iris.csv").then((data) => {
     
   // Call to removes existing brushes 
   function clear() {
-      // clear existing brush from svg1
-      svg1.call(brush1.move, null);
+    // clear existing brush from svg1
+    svg1.call(brush1.move, null);
       
-      // clear existing brush from svg2
-      svg2.call(brush2.move, null);
+    // clear existing brush from svg2
+    svg2.call(brush2.move, null);
     
   }
 
@@ -289,7 +289,7 @@ d3.csv("data/iris.csv").then((data) => {
 
     // Give bold outline to all points within the brush region in Scatterplot2 & collected names of brushed species
     myCircles2.classed("selected", function(d){ 
-      if (isBrushed(brushSelection, x2(d[xKey2]), y2(d[yKey2]))) // if brushed
+      if (isBrushed(brushArea, x2(d[xKey2]), y2(d[yKey2]))) // if brushed
       {
         selectedSpecies.add(d.Species) // add species to set
       }
