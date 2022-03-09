@@ -112,8 +112,14 @@ d3.csv("data/iris.csv").then((data) => {
                               .style("opacity", 0.5);
 
     //TODO: Define a brush (call it brush1)
+    // Add brushing
+    let brush1 = d3
+                    .brush()                              // Add the brush feature using the d3.brush function
+                    .extent( [ [0,0], [width, height] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+    
 
     //TODO: Add brush1 to svg1
+    svg1.call(brush1.on("start", clear).on("brush", updateChart1));
     
   }
 
@@ -177,8 +183,13 @@ d3.csv("data/iris.csv").then((data) => {
                               .style("opacity", 0.5);
 
     //TODO: Define a brush (call it brush2)
-
-    //TODO: Add brush2 to svg2
+    let brush2 = d3
+                    .brush()                             // Add the brush feature using the d3.brush function
+                    .extent( [ [0,0], [width,height] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+    
+//TODO: Add brush2 to svg2
+    svg2.call(brush2.on("start", clear).on("brush", updateChart2));
+    
     
   }
   
@@ -253,13 +264,14 @@ d3.csv("data/iris.csv").then((data) => {
       svg1.call(brush1.move, null);
       
       //TODO: add code to clear existing brush from svg2
+      svg2.call(brush2.move, null);
   }
 
   // Call when Scatterplot1 is brushed 
   function updateChart1(brushEvent) {
       
       //TODO: Find coordinates of brushed region 
-  
+      
       //TODO: Give bold outline to all points within the brush region in Scatterplot1
 
       //TODO: Give bold outline to all points in Scatterplot2 corresponding to points within the brush region in Scatterplot1
