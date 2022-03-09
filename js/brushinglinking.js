@@ -116,10 +116,11 @@ d3.csv("data/iris.csv").then((data) => {
     let brush1 = d3
                     .brush()                              // Add the brush feature using the d3.brush function
                     .extent( [ [0,0], [width, height] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-    
+                    .on("start", clear)                   // clear old brush
+                    .on("brush", updateChart1);           // call updateChart fucntion
 
     // Add brush1 to svg1
-    svg1.call(brush1.on("start", clear).on("brush", updateChart1));
+    svg1.call(brush1)
     
   }
 
@@ -186,9 +187,11 @@ d3.csv("data/iris.csv").then((data) => {
     let brush2 = d3
                     .brush()                             // Add the brush feature using the d3.brush function
                     .extent( [ [0,0], [width,height] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-    
+                    .on("start", clear)                   // clear old brush
+                    .on("brush", updateChart2);           // call updateChart fucntion
+
 // Add brush2 to svg2
-    svg2.call(brush2.on("start", clear).on("brush", updateChart2));
+    svg2.call(brush2)
     
     
   }
